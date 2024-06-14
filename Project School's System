@@ -1,0 +1,175 @@
+import matplotlib.pyplot as plt
+
+bancoDeDados = []
+opcao = 0
+
+def menu():
+    print("---------------------------------")
+    print("->   Colégio Batista Floresta  <-")
+    print("---------------------------------")
+    print("->      CURSO ICC INATEL       <-")
+    print("->       Projeto - SCA         <-")
+    print("->        Filipe Melo          <-")
+    print("---------------------------------")
+    print("[ 1 ] Adicionar Estudante")
+    print("[ 2 ] Listar    Estudante")
+    print("[ 3 ] Editar    Estudante")
+    print("[ 4 ] Buscar    Estudante")
+    print("[ 5 ] Excluir   Estudante")
+    print("[ 6 ] Gráfico   Estudante")
+    print("[ 7 ] Sair")
+    print("---------------------------------")
+
+def adicionar(matricula, nome, email, nota1, nota2):
+    nota3 = nota1 + nota2
+    nota4 = nota3 / 2
+
+    if nota4 < 30:
+        status = "Reprovado"
+    elif nota4 >= 30 and nota4 < 60:
+        status = "Recuperação"
+    else:
+        status = "Aprovado"
+
+    dados = {'matricula': matricula, 'nome': nome.upper(), 'email': email.lower(), 'nota1': nota1, 'nota2': nota2, 'nota3': nota3, 'nota4': nota4, 'status': status}
+    bancoDeDados.append(dados)
+    print('---------------------------------')
+    print('-> Estudante registrado com sucesso!')
+
+def editar(matricula, nome, email, nota1, nota2):
+    for estudante in bancoDeDados:
+        if estudante['matricula'] == matricula:
+            estudante['nome'] = nome.upper()
+            estudante['email'] = email.lower()
+            estudante['nota1'] = nota1
+            estudante['nota2'] = nota2
+            estudante['nota3'] = nota1 + nota2
+            estudante['nota4'] = (nota1 + nota2) / 2
+            if estudante['nota4'] < 30:
+                estudante['status'] = "Reprovado"
+            elif estudante['nota4'] >= 30 and estudante['nota4'] < 60:
+                estudante['status'] = "Recuperação"
+            else:
+                estudante['status'] = "Aprovado"
+            print('---------------------------------')
+            print('-> Estudante editado com sucesso!')
+            return
+    print('-> Estudante não encontrado!')
+
+def buscar(matricula):
+    for estudante in bancoDeDados:
+        if estudante['matricula'] == matricula:
+            print('---------------------------------')
+            print('Estudante encontrado:')
+            print(f'Matricula: {estudante["matricula"]}')
+            print(f'Nome: {estudante["nome"]}')
+            print(f'Email: {estudante["email"]}')
+            print(f'Nota 1º Trimestre: {estudante["nota1"]}')
+            print(f'Nota 2º Trimestre: {estudante["nota2"]}')
+            print(f'Nota Final: {estudante["nota3"]}')
+            print(f'Média Final: {estudante["nota4"]}')
+            print(f'Resultado Final: {estudante["status"]}\n')
+            return
+    print('-> Estudante não encontrado!')
+
+def excluir(matricula):
+    for estudante in bancoDeDados:
+        if estudante['matricula'] == matricula:
+            bancoDeDados.remove(estudante)
+            print('---------------------------------')
+            print('Estudante excluído com sucesso!')
+            return
+    print('-> Estudante não encontrado!')
+
+def listar():
+    if not bancoDeDados:
+        print('-> Não existe nenhum estudante registrado!')
+    else:
+        for posicao, estudante in enumerate(bancoDeDados):
+            print(f'Nº Posição: {posicao} Matricula: {estudante["matricula"]}')
+            print(f'Nome: {estudante["nome"]}')
+            print(f'Email: {estudante["email"]}')
+            print(f'Nota 1º Trimestre: {estudante["nota1"]}')
+            print(f'Nota 2º Trimestre: {estudante["nota2"]}')
+            print(f'Nota Final: {estudante["nota3"]}')
+            print(f'Média Final: {estudante["nota4"]}')
+            print(f'Resultado Final: {estudante["status"]}\n')
+
+# ...
+
+def grafico():
+    if not bancoDeDados:
+        print('-> Não existe nenhum estudante registrado para criar um gráfico!')
+        return
+
+    posicao_aluno = int(input("Digite o número da posição do aluno para criar o gráfico: "))
+
+    if posicao_aluno < 0 or posicao_aluno >= len(bancoDeDados):
+        print('-> Posição de aluno inválida!')
+        return
+
+    aluno = bancoDeDados[posicao_aluno]
+    nome_aluno = aluno["nome"]
+    boletim = ["1º Nota", "2º Nota", "Média Final"]
+    valores = [aluno['nota1'], aluno['nota2'], aluno['nota4']]
+
+    for i, v in enumerate(valores):
+        plt.text(i, v, str(v), ha='center', va='bottom')
+
+    plt.bar(boletim, valores)
+    plt.xlabel(f'{nome_aluno} - {aluno["status"]}')
+    plt.ylabel('Pontuação')
+    plt.title('Boletim Acadêmico')
+    plt.show()
+
+# ...
+
+while opcao != 7:
+    menu()
+    opcao = int(input("-> Digite opção: "))
+    print("---------------------------------")
+
+    if opcao == 1:
+        print("[ 1 ] Adicionar Estudante")
+        print("---------------------------------")
+        matricula = int(input("-> Matricula: "))
+        nome = input("-> Nome: ")
+        email = input("-> E-mail: ")
+        nota1 = float(input("-> Nota 1º Trimestre: "))
+        nota2 = float(input("-> Nota 2º Trimestre: "))
+        adicionar(matricula, nome, email, nota1, nota2)
+
+    if opcao == 2:
+        print("[ 2 ] Listar Estudante")
+        print("---------------------------------")
+        listar()
+
+    if opcao == 3:
+        print("[ 3 ] Editar Estudante")
+        print("---------------------------------")
+        matricula = int(input("-> Matricula do estudante a ser editado: "))
+        nome = input("-> Nome: ")
+        email = input("-> E-mail: ")
+        nota1 = float(input("-> Nota 1º Trimestre: "))
+        nota2 = float(input("-> Nota 2º Trimestre: "))
+        editar(matricula, nome, email, nota1, nota2)
+
+    if opcao == 4:
+        print("[ 4 ] Buscar Estudante")
+        print("---------------------------------")
+        matricula = int(input("-> Matricula do estudante a ser buscado: "))
+        buscar(matricula)
+
+    if opcao == 5:
+        print("[ 5 ] Excluir Estudante")
+        print("---------------------------------")
+        matricula = int(input("-> Matricula do estudante a ser excluído: "))
+        excluir(matricula)
+
+    if opcao == 6:
+        grafico()
+
+    if opcao == 7:
+        print("Fechando o programa...")
+        print("Goodbye...")
+        break
